@@ -220,6 +220,11 @@
     color: #21293C;
 }
 
+.area-picker-letter span.picker-letter-disabled{
+    color: #A3ACC7;
+    cursor: not-allowed;
+}
+
 .area-picker-list {
     position: relative;
     width: 100%;
