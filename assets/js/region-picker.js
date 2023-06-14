@@ -18,6 +18,31 @@ function regionIconFixer(code) {
   return code;
 }
 
+function initBaseContainer(container) {
+  const template = `
+<div id="areaPicker" class="picker-box area-picker hide">
+  <div class="flex flex-row align-center justify-between">
+      <div class="area-picker-tips">选择查询地区（支持多选）</div>
+      <div class="flex flex-row align-center">
+          <div class="area-picker-clear-all">清除全部</div>
+          <div class="area-picker-sure flex flex-center">确定</div>
+      </div>
+  </div>
+
+  <div class="area-picker-selected flex flex-row flex-wrap"></div>
+
+  <div class="area-picker-input flex flex-row align-center">
+      <input type="text" placeholder="检索国家或地区的中英文名称" />
+      <i class="icon-search"></i>
+  </div>
+
+  <div class="area-picker-letter"></div>
+  <div class="area-picker-list flex flex-row flex-wrap align-start"></div>
+</div>
+  `;
+  document.querySelector(container).innerHTML = template;
+}
+
 /**
  * Generate the region picker letters template
  *
@@ -159,6 +184,7 @@ function handlePickerLetterClick() {}
 function handleSearch() {}
 
 function bootstrap() {
+  initBaseContainer("#container");
   RegionPicker.RegionList = window.RegionOptions.region;
   initRegionPickerLetters(RegionPicker.RegionList);
   initRegionList(RegionPicker.RegionList);

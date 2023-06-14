@@ -36,32 +36,13 @@
 </head>
 
 <body>
-
     <div id="demo-topbar">
         <button id="show-modal">Show Modal</button>
         <button id="hide-modal">Hide Modal</button>
     </div>
+    <div id="container"></div>
 
-    <div id="areaPicker" class="picker-box area-picker hide">
-        <div class="flex flex-row align-center justify-between">
-            <div class="area-picker-tips">选择查询地区（支持多选）</div>
-            <div class="flex flex-row align-center">
-                <div class="area-picker-clear-all">清除全部</div>
-                <div class="area-picker-sure flex flex-center">确定</div>
-            </div>
-        </div>
-
-        <div class="area-picker-selected flex flex-row flex-wrap"></div>
-
-        <div class="area-picker-input flex flex-row align-center">
-            <input type="text" placeholder="检索国家或地区的中英文名称" />
-            <i class="icon-search"></i>
-        </div>
-
-        <div class="area-picker-letter"></div>
-
-        <div class="area-picker-list flex flex-row flex-wrap align-start"></div>
-    </div>
+    <script src="assets/js/region-picker.js"></script>
 
     <script>
         const areaPicker = document.getElementById('areaPicker');
@@ -75,8 +56,5 @@
 
         document.getElementById('show-modal').click();
     </script>
-
-    <script src="assets/js/region-picker.js"></script>
 </body>
-
 </html>
