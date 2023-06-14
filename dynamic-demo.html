@@ -17,9 +17,17 @@
             overflow: hidden;
         }
 
-        .demo #areaPicker {
-            margin: 40px auto;
+        .demo #container {
+            margin: 0 auto;
+            display: block;
             position: relative;
+            width: 600px;
+            height: 600px;
+        }
+
+        .demo #container .picker-box {
+            position: relative;
+            margin: 40px auto;
         }
 
         .demo #demo-topbar {
@@ -40,23 +48,26 @@
         <button id="show-modal">Show Modal</button>
         <button id="hide-modal">Hide Modal</button>
     </div>
-    <div id="container"></div>
+
+    <div id="container">
+        <!-- container for region picker -->
+    </div>
 
     <script src="assets/js/region-picker.js"></script>
-
     <script>
-        RegionPicker("#container", window.RegionOptions.region);
+        let instance = RegionPicker("#container", window.RegionOptions.region);
 
-        const areaPicker = document.getElementById('areaPicker');
+        const areaPicker = document.getElementById(instance.ComponentId);
 
         document.getElementById('show-modal').addEventListener('click', function () {
-            areaPicker.classList.remove('hide');
+            instance.Show();
         });
         document.getElementById('hide-modal').addEventListener('click', function () {
-            areaPicker.classList.add('hide');
+            instance.Hide();
         });
 
         document.getElementById('show-modal').click();
     </script>
 </body>
+
 </html>

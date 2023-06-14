@@ -2,6 +2,9 @@ window.RegionPicker = (function (window) {
   var RegionPicker = {
     Selected: null,
     RegionList: null,
+    ComponentId: "",
+    Show: showPicker,
+    Hide: hidePicker,
   };
 
   /**
@@ -19,9 +22,9 @@ window.RegionPicker = (function (window) {
     return code;
   }
 
-  function initBaseContainer(container) {
+  function initBaseContainer(container, componentId) {
     const template = `
-  <div id="areaPicker" class="picker-box area-picker hide">
+  <div id="${componentId}" class="picker-box area-picker hide">
     <div class="flex flex-row align-center justify-between">
         <div class="area-picker-tips">选择查询地区（支持多选）</div>
         <div class="flex flex-row align-center">
@@ -94,7 +97,7 @@ window.RegionPicker = (function (window) {
       </div>`;
     });
 
-    document.querySelector("#areaPicker .area-picker-list").innerHTML = template.join("");
+    document.querySelector(`#${RegionPicker.ComponentId} .area-picker-list`).innerHTML = template.join("");
   }
 
   /**
@@ -184,10 +187,26 @@ window.RegionPicker = (function (window) {
   // TODO
   function handleSearch() {}
 
+  /**
+   * Show the region picker
+   */
+  function showPicker() {
+    document.getElementById(RegionPicker.ComponentId).classList.remove("hide");
+  }
+
+  /**
+   * Hide the region picker
+   */
+  function hidePicker() {
+    document.getElementById(RegionPicker.ComponentId).classList.add("hide");
+  }
+
   function bootstrap(container, regionList) {
+    const componentId = "region-picker-" + Math.random().toString(36).slice(-6);
+    RegionPicker.ComponentId = componentId;
     RegionPicker.RegionList = regionList;
 
-    initBaseContainer(container);
+    initBaseContainer(container, componentId);
     initRegionPickerLetters(regionList);
     initRegionList(regionList);
 
