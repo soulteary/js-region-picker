@@ -1,2 +1,3 @@
-# js-region-selector
-A country filter written by vanilla JS.
+# JS Region Picker
+
+A JavaScript Region Picker written by vanilla JS.
