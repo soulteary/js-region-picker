@@ -56,7 +56,7 @@ function initRegionList(regionList) {
 
     return `
     <div class="area-picker-item flex flex-row align-center">
-      <label for="region-picker-${code}" class="checkBox-inner">
+      <label for="region-picker-${code}" class="checkBox-inner" data-code="${code}">
           <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
           <span class="checkBox"></span>
       </label>
@@ -116,6 +116,10 @@ function handlePickerSelected() {
     const code = target.parentElement.getAttribute("data-code");
     removeSelectedRegion(code);
     updatePickerSelected(RegionPicker.Selected);
+
+    Array.from(document.getElementsByName("region-picker")).forEach((item) => {
+      if (item.value === code) item.checked = false;
+    });
   });
 
   // handle clear all
@@ -123,18 +127,43 @@ function handlePickerSelected() {
     e.preventDefault();
     RegionPicker.Selected = [];
     updatePickerSelected(RegionPicker.Selected);
+
+    Array.from(document.getElementsByName("region-picker")).forEach((item) => {
+      item.checked = false;
+    });
   });
 }
+
+function handlePickerList() {
+  document.querySelector(".area-picker-list").addEventListener("click", (e) => {
+    const target = e.target;
+    const classname = target.getAttribute("class");
+    if (!classname || classname.trim() != "checkBox") return;
+    // TODO
+    // The current DOM structure design makes it necessary to use asynchronous fetching,
+    // which may be adjusted and optimized to avoid potential problems
+    setTimeout(() => {
+      const selected = Array.from(document.getElementsByName("region-picker"))
+        .filter((item) => item.checked)
+        .map((item) => item.value);
+
+      RegionPicker.Selected = RegionPicker.RegionList.filter((item) => selected.includes(item.code));
+      updatePickerSelected(RegionPicker.Selected);
+    }, 10);
+  });
+}
+
+// TODO
+function handlePickerLetterClick() {}
+// TODO
+function handleSearch() {}
 
 function bootstrap() {
   RegionPicker.RegionList = window.RegionOptions.region;
   initRegionPickerLetters(RegionPicker.RegionList);
   initRegionList(RegionPicker.RegionList);
   handlePickerSelected();
-
-  // TODO remove this test
-  RegionPicker.Selected = RegionPicker.RegionList;
-  updatePickerSelected(RegionPicker.Selected);
+  handlePickerList();
 }
 
 bootstrap();
