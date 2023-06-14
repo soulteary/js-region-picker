@@ -107,6 +107,7 @@ function removeSelectedRegion(code) {
  * Handle the region picker selected close icon click event
  */
 function handlePickerSelected() {
+  // handle clear single item
   document.querySelector(".area-picker-selected").addEventListener("click", (e) => {
     e.preventDefault();
     const target = e.target;
@@ -114,6 +115,13 @@ function handlePickerSelected() {
     if (!classname || classname.trim() != "area-picker-selected-close") return;
     const code = target.parentElement.getAttribute("data-code");
     removeSelectedRegion(code);
+    updatePickerSelected(RegionPicker.Selected);
+  });
+
+  // handle clear all
+  document.querySelector(".area-picker-clear-all").addEventListener("click", (e) => {
+    e.preventDefault();
+    RegionPicker.Selected = [];
     updatePickerSelected(RegionPicker.Selected);
   });
 }
