@@ -20,9 +20,7 @@ function regionIconFixer(code) {
  */
 function initRegionPickerLetters(regionList) {
   const firstLettersDict = regionList
-    .map((item, _) => {
-      return [item.name.slice(0, 1).toUpperCase(), item.code.slice(0, 1).toUpperCase()];
-    })
+    .map((item, _) => [item.name.slice(0, 1).toUpperCase(), item.code.slice(0, 1).toUpperCase()])
     .reduce((prev, item) => {
       prev[item[0]] = true;
       prev[item[1]] = true;
@@ -38,7 +36,6 @@ function initRegionPickerLetters(regionList) {
       template += `<span class="picker-letter-disabled">${char} </span>`;
     }
   }
-
   document.querySelector(".area-picker-letter").innerHTML = template;
 }
 
@@ -52,7 +49,8 @@ function initRegionList(regionList) {
     const { code, cname, name } = item;
     const icon = regionIconFixer(code);
 
-    return `<div class="area-picker-item flex flex-row align-center">
+    return `
+    <div class="area-picker-item flex flex-row align-center">
       <label for="region-picker-${code}" class="checkBox-inner">
           <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
           <span class="checkBox"></span>
@@ -62,11 +60,31 @@ function initRegionList(regionList) {
           <div class="area-picker-item-zh">${cname}</div>
           <div class="area-picker-item-en">${name}</div>
       </div>
-  </div>`;
+    </div>`;
   });
 
   document.querySelector("#areaPicker .area-picker-list").innerHTML = template.join("");
+  UpdatePickerSelected(regionList);
 }
 
 initRegionPickerLetters(window.RegionOptions.region);
 initRegionList(window.RegionOptions.region);
+
+
+/**
+ * Update picker selected template
+ *
+ * @param {array} regionList 
+ */
+function UpdatePickerSelected(regionList) {
+  const template = regionList.map((item, _) => {
+    const { cname } = item;
+    return `
+    <div class="area-picker-selected-item flex flex-row flex-center">
+      <span>${cname}</span>
+      <img class="area-picker-selected-close" src="assets/region-selector/close.svg" alt="" />
+    </div>`;
+  });
+
+  document.querySelector(".area-picker-selected").innerHTML = template.join("");
+}
