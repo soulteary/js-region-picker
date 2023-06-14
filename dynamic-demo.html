@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="assets/css/common.css">
     <link rel="stylesheet" href="assets/css/topbar.css">
+    <script src="mock/region-data.js"></script>
 
     <style>
         .demo body {
@@ -78,7 +79,7 @@
         </div>
 
         <div class="area-picker-input flex flex-row align-center">
-            <input type="text" placeholder="请输入国家中文或英文名称" />
+            <input type="text" placeholder="检索国家或地区的中英文名称" />
             <i class="icon-search"></i>
         </div>
 
@@ -111,110 +112,8 @@
             <span>Z</span>
         </div>
 
-        <div class="area-picker-list flex flex-row flex-wrap align-start">
-
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-            <div class="area-picker-item flex flex-row align-center">
-                <label for="picker6" class="checkBox-inner">
-                    <input id="picker6" type="checkbox" name="picker6" value="picker6" />
-                    <span class="checkBox"></span>
-                </label>
-                <img src="assets/region-icon/ar.svg" alt="" />
-                <div class="flex flex-col">
-                    <div class="area-picker-item-zh">阿根廷</div>
-                    <div class="area-picker-item-en">Argentina</div>
-                </div>
-            </div>
-
-        </div>
+        <div class="area-picker-list flex flex-row flex-wrap align-start"></div>
     </div>
-
-
 
     <script>
         const areaPicker = document.getElementById('areaPicker');
@@ -227,9 +126,9 @@
         });
 
         document.getElementById('show-modal').click();
-
     </script>
 
+    <script src="assets/js/region-picker.js"></script>
 </body>
 
 </html>
