@@ -56,17 +56,9 @@
     <script src="assets/js/region-picker.js"></script>
     <script>
         let instance = RegionPicker("#container", window.RegionOptions.region);
-
-        const areaPicker = document.getElementById(instance.ComponentId);
-
-        document.getElementById('show-modal').addEventListener('click', function () {
-            instance.Show();
-        });
-        document.getElementById('hide-modal').addEventListener('click', function () {
-            instance.Hide();
-        });
-
-        document.getElementById('show-modal').click();
+        document.getElementById('show-modal').addEventListener('click', instance.Show);
+        document.getElementById('hide-modal').addEventListener('click', instance.Hide);
+        document.getElementById('show-modal').click(); // switch modal to show instead of hide (default)
     </script>
 </body>
 
