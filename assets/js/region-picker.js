@@ -1,4 +1,4 @@
-window.RegionPicker = (function (window) {
+window.RegionPicker = (function () {
   var RegionPicker = {
     Selected: null,
     RegionList: null,
@@ -217,4 +217,4 @@ window.RegionPicker = (function (window) {
   }
 
   return bootstrap;
-})(window);
+})();
