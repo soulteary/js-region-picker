@@ -60,6 +60,7 @@
   font-weight: 400;
   font-size: 12px;
   color: #21293c;
+  user-select: none;
 }
 
 .area-picker-selected-close {
