@@ -107,16 +107,17 @@ window.RegionPicker = (function () {
    *
    * @param {array} regionList
    */
-  function filterRegionListByChar(selectedChar) {
+  function filterRegionListByChar(charSelected) {
     const areaPickerItems = document.querySelectorAll(".area-picker-item");
     areaPickerItems.forEach((item) => {
-      if (selectedChar === "*") {
+      if (charSelected === "*") {
         item.classList.remove("hide");
         return;
       }
 
       const enName = item.querySelector(".area-picker-item-en").innerText;
-      if (enName.startsWith(selectedChar)) {
+      const code = item.querySelector("label").getAttribute("data-code");
+      if (enName.startsWith(charSelected) || code.startsWith(charSelected)) {
         item.classList.remove("hide");
       } else {
         item.classList.add("hide");
@@ -226,7 +227,7 @@ window.RegionPicker = (function () {
       } else {
         letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
         target.classList.add("picker-letter-active");
-        filterRegionListByChar(code);
+        filterRegionListByChar(code.toLowerCase());
       }
     });
   }
@@ -239,7 +240,7 @@ window.RegionPicker = (function () {
 
       const areaPickerItems = document.querySelectorAll(".area-picker-item");
       areaPickerItems.forEach((item) => {
-        const zhName = item.querySelector(".area-picker-item-zh").innerText.toLowerCase();
+        const zhName = item.querySelector(".area-picker-item-zh").innerText;
         const enName = item.querySelector(".area-picker-item-en").innerText.toLowerCase();
 
         // 检查地区名称是否包含搜索词
