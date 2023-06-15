@@ -235,19 +235,19 @@ window.RegionPicker = (function () {
   // search area
   function handleSearch() {
     const searchInput = document.getElementById("area-search-input");
-    searchInput.addEventListener("input", () => {
-      const searchTerm = searchInput.value.trim().toLowerCase();
+    const areaPickerItems = document.querySelectorAll(".area-picker-item");
 
-      const areaPickerItems = document.querySelectorAll(".area-picker-item");
+    searchInput.addEventListener("input", () => {
+      const searchTerm = (searchInput.value || "").trim().toLowerCase();
+
       areaPickerItems.forEach((item) => {
         const zhName = item.querySelector(".area-picker-item-zh").innerText;
         const enName = item.querySelector(".area-picker-item-en").innerText.toLowerCase();
 
-        // 检查地区名称是否包含搜索词
         if (zhName.includes(searchTerm) || enName.includes(searchTerm)) {
-          item.style.display = "block";
+          item.classList.remove("hide");
         } else {
-          item.style.display = "none";
+          item.classList.add("hide");
         }
       });
     });
