@@ -65,7 +65,7 @@ window.RegionPicker = (function () {
     for (let i = 65; i <= 90; i++) {
       const char = String.fromCharCode(i);
       if (firstLettersDict[char]) {
-        template += `<span class="picker-letter">${char} </span>`;
+        template += `<span class="picker-letter" data-code="${char}">${char} </span>`;
       } else {
         template += `<span class="picker-letter-disabled">${char} </span>`;
       }
@@ -109,7 +109,7 @@ window.RegionPicker = (function () {
    */
   function filterRegionListByChar(selectedChar) {
     const areaPickerItems = document.querySelectorAll(".area-picker-item");
-    areaPickerItems.forEach(item => {
+    areaPickerItems.forEach((item) => {
       const enName = item.querySelector(".area-picker-item-en").innerText;
       if (enName.startsWith(selectedChar)) {
         item.style.display = "block";
@@ -145,7 +145,7 @@ window.RegionPicker = (function () {
   function removeSelectedRegion(code) {
     if (!code) return;
     const regionList = RegionPicker.Selected;
-    const index = regionList.findIndex(item => item.code === code);
+    const index = regionList.findIndex((item) => item.code === code);
     regionList.splice(index, 1);
     RegionPicker.Selected = regionList;
     updatePickerSelected(RegionPicker.Selected);
@@ -156,7 +156,7 @@ window.RegionPicker = (function () {
    */
   function handlePickerSelected() {
     // handle clear single item
-    document.querySelector(".area-picker-selected").addEventListener("click", e => {
+    document.querySelector(".area-picker-selected").addEventListener("click", (e) => {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
@@ -165,25 +165,25 @@ window.RegionPicker = (function () {
       removeSelectedRegion(code);
       updatePickerSelected(RegionPicker.Selected);
 
-      Array.from(document.getElementsByName("region-picker")).forEach(item => {
+      Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         if (item.value === code) item.checked = false;
       });
     });
 
     // handle clear all
-    document.querySelector(".area-picker-clear-all").addEventListener("click", e => {
+    document.querySelector(".area-picker-clear-all").addEventListener("click", (e) => {
       e.preventDefault();
       RegionPicker.Selected = [];
       updatePickerSelected(RegionPicker.Selected);
 
-      Array.from(document.getElementsByName("region-picker")).forEach(item => {
+      Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         item.checked = false;
       });
     });
   }
 
   function handlePickerList() {
-    document.querySelector(".area-picker-list").addEventListener("click", e => {
+    document.querySelector(".area-picker-list").addEventListener("click", (e) => {
       const target = e.target;
       // const classname = target.getAttribute("class");
       // if (!classname || classname.trim() != "checkBox") return;
@@ -194,10 +194,10 @@ window.RegionPicker = (function () {
       // which may be adjusted and optimized to avoid potential problems
       setTimeout(() => {
         const selected = Array.from(document.getElementsByName("region-picker"))
-          .filter(item => item.checked)
-          .map(item => item.value);
+          .filter((item) => item.checked)
+          .map((item) => item.value);
 
-        RegionPicker.Selected = RegionPicker.RegionList.filter(item => selected.includes(item.code));
+        RegionPicker.Selected = RegionPicker.RegionList.filter((item) => selected.includes(item.code));
         updatePickerSelected(RegionPicker.Selected);
       }, 10);
     });
@@ -205,13 +205,17 @@ window.RegionPicker = (function () {
 
   // picker click
   function handlePickerLetterClick() {
-    const pickerLetters = document.querySelectorAll(".picker-letter");
-    pickerLetters.forEach(letter => {
-      letter.addEventListener("click", () => {
-        filterRegionListByChar(letter.innerText.replace(/\s/g, ""));
-      });
+    document.querySelector(".area-picker-letter").addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = e.target;
+      const classname = target.getAttribute("class");
+      if (!classname || classname.trim() != "picker-letter") return;
+      const code = target.getAttribute("data-code");
+      if (!code) return;
+      filterRegionListByChar(code);
     });
   }
+
   // search area
   function handleSearch() {
     const searchInput = document.getElementById("area-search-input");
@@ -219,7 +223,7 @@ window.RegionPicker = (function () {
       const searchTerm = searchInput.value.trim().toLowerCase();
 
       const areaPickerItems = document.querySelectorAll(".area-picker-item");
-      areaPickerItems.forEach(item => {
+      areaPickerItems.forEach((item) => {
         const zhName = item.querySelector(".area-picker-item-zh").innerText.toLowerCase();
         const enName = item.querySelector(".area-picker-item-en").innerText.toLowerCase();
 
