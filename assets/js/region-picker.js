@@ -240,6 +240,14 @@ window.RegionPicker = (function () {
     searchInput.addEventListener("input", () => {
       const searchTerm = (searchInput.value || "").trim().toLowerCase();
 
+      if (!searchTerm) {
+        areaPickerItems.forEach((item) => item.classList.remove("hide"));
+        return;
+      }
+
+      const letterLabels = Array.from(document.querySelectorAll(".area-picker-letter .picker-letter"));
+      letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
+
       areaPickerItems.forEach((item) => {
         const zhName = item.querySelector(".area-picker-item-zh").innerText;
         const enName = item.querySelector(".area-picker-item-en").innerText.toLowerCase();
