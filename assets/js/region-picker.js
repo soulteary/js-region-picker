@@ -210,7 +210,9 @@ window.RegionPicker = (function () {
 
   // picker click
   function handlePickerLetterClick() {
-    document.querySelector(".area-picker-letter").addEventListener("click", (e) => {
+    const letterContainer = document.querySelector(".area-picker-letter");
+    const letterLabels = Array.from(letterContainer.querySelectorAll(".picker-letter"));
+    letterContainer.addEventListener("click", (e) => {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
@@ -222,6 +224,7 @@ window.RegionPicker = (function () {
         target.classList.remove("picker-letter-active");
         filterRegionListByChar("*");
       } else {
+        letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
         target.classList.add("picker-letter-active");
         filterRegionListByChar(code);
       }
