@@ -121,6 +121,11 @@
   user-select: none;
 }
 
+.area-picker-letter span.picker-letter-active {
+  color: #21293c;
+  font-weight: bold;
+}
+
 .area-picker-letter span:hover {
   font-weight: 900;
   color: #21293c;
@@ -177,7 +182,6 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-
 }
 
 .area-picker-item-en {

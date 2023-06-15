@@ -110,11 +110,16 @@ window.RegionPicker = (function () {
   function filterRegionListByChar(selectedChar) {
     const areaPickerItems = document.querySelectorAll(".area-picker-item");
     areaPickerItems.forEach((item) => {
+      if (selectedChar === "*") {
+        item.classList.remove("hide");
+        return;
+      }
+
       const enName = item.querySelector(".area-picker-item-en").innerText;
       if (enName.startsWith(selectedChar)) {
-        item.style.display = "block";
+        item.classList.remove("hide");
       } else {
-        item.style.display = "none";
+        item.classList.add("hide");
       }
     });
   }
@@ -209,10 +214,17 @@ window.RegionPicker = (function () {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
-      if (!classname || classname.trim() != "picker-letter") return;
+      if (!classname || classname.trim().indexOf("picker-letter") == -1) return;
       const code = target.getAttribute("data-code");
       if (!code) return;
-      filterRegionListByChar(code);
+
+      if (target.classList.contains("picker-letter-active")) {
+        target.classList.remove("picker-letter-active");
+        filterRegionListByChar("*");
+      } else {
+        target.classList.add("picker-letter-active");
+        filterRegionListByChar(code);
+      }
     });
   }
 
