@@ -1,10 +1,13 @@
 window.RegionPicker = (function () {
   var RegionPicker = {
+    Show: showPicker,
+    Hide: hidePicker,
+
+    options: {},
+    BaseDir: "",
     Selected: null,
     RegionList: null,
     ComponentId: "",
-    Show: showPicker,
-    Hide: hidePicker,
   };
 
   /**
@@ -90,7 +93,7 @@ window.RegionPicker = (function () {
               <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
               <span class="checkBox"></span>
           </div>
-          <img src="assets/region-icon/${icon}.svg" alt="${cname}" />
+          <img src="${RegionPicker.BaseDir}assets/region-icon/${icon}.svg" alt="${cname}" />
           <div class="flex flex-col">
               <div class="area-picker-item-zh">${cname}</div>
               <div class="area-picker-item-en">${name}</div>
@@ -136,10 +139,13 @@ window.RegionPicker = (function () {
       return `
       <div class="area-picker-selected-item flex flex-row flex-center" data-code="${code}">
         <span>${cname}</span>
-        <img class="area-picker-selected-close" src="assets/region-selector/close.svg" alt="" />
+        <img class="area-picker-selected-close" src="${RegionPicker.BaseDir}assets/region-selector/close.svg" alt="" />
       </div>`;
     });
 
+    if (RegionPicker && RegionPicker.options && RegionPicker.options.updater && typeof RegionPicker.options.updater === "function") {
+      RegionPicker.options.updater(regionList);
+    }
     document.querySelector(".area-picker-selected").innerHTML = template.join("");
   }
 
@@ -275,10 +281,15 @@ window.RegionPicker = (function () {
     document.getElementById(RegionPicker.ComponentId).classList.add("hide");
   }
 
-  function bootstrap(container, regionList) {
+  function bootstrap(container, options) {
+    const { data: regionList, baseDir } = options;
     const componentId = "region-picker-" + Math.random().toString(36).slice(-6);
     RegionPicker.ComponentId = componentId;
     RegionPicker.RegionList = regionList;
+    RegionPicker.options = options;
+    if (baseDir != "") {
+      RegionPicker.BaseDir = baseDir + "/";
+    }
 
     initBaseContainer(container, componentId);
     initRegionPickerLetters(regionList);
