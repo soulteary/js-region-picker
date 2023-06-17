@@ -44,6 +44,12 @@
 
 .area-picker-selected {
   margin-top: 16px;
+  min-height: 30px;
+  -webkit-transition: height .1s ease 0s;
+  -moz-transition: height .1s ease 0s;
+  -ms-transition: height .1s ease 0s;
+  -o-transition: height .1s ease 0s;
+  transition: height .1s ease 0s;
 }
 
 .area-picker-selected-item {
