@@ -2,6 +2,9 @@ window.RegionPicker = (function () {
   var RegionPicker = {
     Show: showPicker,
     Hide: hidePicker,
+    GetSelected: function () {
+      return this.Selected;
+    },
 
     options: {},
     BaseDir: "",
@@ -112,7 +115,7 @@ window.RegionPicker = (function () {
    */
   function filterRegionListByChar(charSelected) {
     const areaPickerItems = document.querySelectorAll(".area-picker-item");
-    areaPickerItems.forEach(item => {
+    areaPickerItems.forEach((item) => {
       if (charSelected === "*") {
         item.classList.remove("hide");
         return;
@@ -145,7 +148,7 @@ window.RegionPicker = (function () {
     });
 
     if (RegionPicker && RegionPicker.options && RegionPicker.options.updater && typeof RegionPicker.options.updater === "function") {
-      RegionPicker.options.updater(regionList);
+      RegionPicker.options.updater(RegionPicker, regionList);
     }
     document.querySelector(".area-picker-selected").innerHTML = template.join("");
   }
@@ -158,7 +161,7 @@ window.RegionPicker = (function () {
   function removeSelectedRegion(code) {
     if (!code) return;
     const regionList = RegionPicker.Selected;
-    const index = regionList.findIndex(item => item.code === code);
+    const index = regionList.findIndex((item) => item.code === code);
     regionList.splice(index, 1);
     RegionPicker.Selected = regionList;
     updatePickerSelected(RegionPicker.Selected);
@@ -169,7 +172,7 @@ window.RegionPicker = (function () {
    */
   function handlePickerSelected() {
     // handle clear single item
-    document.querySelector(".area-picker-selected").addEventListener("click", e => {
+    document.querySelector(".area-picker-selected").addEventListener("click", (e) => {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
@@ -178,25 +181,25 @@ window.RegionPicker = (function () {
       removeSelectedRegion(code);
       updatePickerSelected(RegionPicker.Selected);
 
-      Array.from(document.getElementsByName("region-picker")).forEach(item => {
+      Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         if (item.value === code) item.checked = false;
       });
     });
 
     // handle clear all
-    document.querySelector(".area-picker-clear-all").addEventListener("click", e => {
+    document.querySelector(".area-picker-clear-all").addEventListener("click", (e) => {
       e.preventDefault();
       RegionPicker.Selected = [];
       updatePickerSelected(RegionPicker.Selected);
 
-      Array.from(document.getElementsByName("region-picker")).forEach(item => {
+      Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         item.checked = false;
       });
     });
   }
 
   function handlePickerList() {
-    document.querySelector(".area-picker-list").addEventListener("click", e => {
+    document.querySelector(".area-picker-list").addEventListener("click", (e) => {
       const target = e.target;
       // const classname = target.getAttribute("class");
       // if (!classname || classname.trim() != "checkBox") return;
@@ -207,10 +210,10 @@ window.RegionPicker = (function () {
       // which may be adjusted and optimized to avoid potential problems
       setTimeout(() => {
         const selected = Array.from(document.getElementsByName("region-picker"))
-          .filter(item => item.checked)
-          .map(item => item.value);
+          .filter((item) => item.checked)
+          .map((item) => item.value);
 
-        RegionPicker.Selected = RegionPicker.RegionList.filter(item => selected.includes(item.code));
+        RegionPicker.Selected = RegionPicker.RegionList.filter((item) => selected.includes(item.code));
         updatePickerSelected(RegionPicker.Selected);
       }, 10);
     });
@@ -220,7 +223,7 @@ window.RegionPicker = (function () {
   function handlePickerLetterClick() {
     const letterContainer = document.querySelector(".area-picker-letter");
     const letterLabels = Array.from(letterContainer.querySelectorAll(".picker-letter"));
-    letterContainer.addEventListener("click", e => {
+    letterContainer.addEventListener("click", (e) => {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
@@ -232,7 +235,7 @@ window.RegionPicker = (function () {
         target.classList.remove("picker-letter-active");
         filterRegionListByChar("*");
       } else {
-        letterLabels.forEach(item => item.classList.remove("picker-letter-active"));
+        letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
         target.classList.add("picker-letter-active");
         filterRegionListByChar(code.toLowerCase());
       }
@@ -248,14 +251,14 @@ window.RegionPicker = (function () {
       const searchTerm = (searchInput.value || "").trim().toLowerCase();
 
       if (!searchTerm) {
-        areaPickerItems.forEach(item => item.classList.remove("hide"));
+        areaPickerItems.forEach((item) => item.classList.remove("hide"));
         return;
       }
 
       const letterLabels = Array.from(document.querySelectorAll(".area-picker-letter .picker-letter"));
-      letterLabels.forEach(item => item.classList.remove("picker-letter-active"));
+      letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
 
-      areaPickerItems.forEach(item => {
+      areaPickerItems.forEach((item) => {
         const zhName = item.querySelector(".area-picker-item-zh").innerText;
         const enName = item.querySelector(".area-picker-item-en").innerText.toLowerCase();
 
@@ -283,7 +286,7 @@ window.RegionPicker = (function () {
   }
 
   function bootstrap(container, options) {
-    const { data: regionList, baseDir } = options;
+    const { data: regionList, baseDir, preselected } = options;
     const componentId = "region-picker-" + Math.random().toString(36).slice(-6);
     RegionPicker.ComponentId = componentId;
     RegionPicker.RegionList = regionList;
@@ -300,6 +303,20 @@ window.RegionPicker = (function () {
     handlePickerList();
     handlePickerLetterClick();
     handleSearch();
+
+    if (preselected) {
+      const selected = regionList.filter((item) => preselected == item.code);
+      if (selected.length == 1) {
+        RegionPicker.Selected = [selected[0]];
+        updatePickerSelected(RegionPicker.Selected);
+
+        RegionPicker.Selected.forEach((selected) => {
+          Array.from(document.getElementsByName("region-picker")).forEach((item) => {
+            if (item.value === selected.code) item.checked = true;
+          });
+        });
+      }
+    }
 
     return RegionPicker;
   }
