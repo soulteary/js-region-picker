@@ -7,7 +7,7 @@
     <title>Dynamic Demo</title>
 
     <link rel="stylesheet" href="assets/css/common.css">
-    <link rel="stylesheet" href="assets/css/topbar.css">
+    <link rel="stylesheet" href="assets/css/region-picker.css">
     <script src="mock/region-data.js"></script>
 
     <style>
@@ -55,7 +55,7 @@
 
     <script src="assets/js/region-picker.js"></script>
     <script>
-        let instance = RegionPicker("#container", window.RegionOptions.region);
+        let instance = RegionPicker("#container", {data: window.RegionOptions.region, baseDir: "", preselected: "cn"});
         document.getElementById('show-modal').addEventListener('click', instance.Show);
         document.getElementById('hide-modal').addEventListener('click', instance.Hide);
         document.getElementById('show-modal').click(); // switch modal to show instead of hide (default)
