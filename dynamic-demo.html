@@ -25,28 +25,55 @@
             height: 600px;
         }
 
-        .demo #container .picker-box {
+        .demo #container .region-picker-container {
             position: relative;
             margin: 40px auto;
         }
 
+
         .demo #demo-topbar {
-            width: 240px;
-            margin: 40px auto;
+            width: 100%;
+            margin: 0 auto 20px;
+            background: #000;
+        }
+
+        .demo #demo-topbar span {
+            color: #fff;
+            font-size: 24px;
+            display: inline-block;
+            line-height: 100%;
+            vertical-align: middle;
+        }
+
+        .demo #demo-topbar .button-group {
+            margin: 0 auto;
+            width: 400px;
         }
 
         .demo #demo-topbar button {
-            width: 80px;
+            width: 120px;
             margin: 4px;
             padding: 8px;
+        }
+
+        .demo .debug-output {
+            background: #000;
+            color: #fff;
+            height: 50px;
+            line-height: 2;
+            font-size: 25px;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
     <div id="demo-topbar">
-        <button id="show-modal">Show Modal</button>
-        <button id="hide-modal">Hide Modal</button>
+        <div class="button-group">
+            <span>ACTION: </span>
+            <button id="show-modal">Show Modal</button>
+            <button id="hide-modal">Hide Modal</button>
+        </div>
     </div>
 
     <div id="container">

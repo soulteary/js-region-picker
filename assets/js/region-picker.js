@@ -40,24 +40,24 @@ window.RegionPicker = function (container, options = {}) {
 
   function InitBaseContainer(container, componentId) {
     const template = `
-      <div id="${componentId}" class="picker-box area-picker hide">
+      <div id="${componentId}" class="region-picker-container hide">
         <div class="flex flex-row align-center justify-between">
-            <div class="area-picker-tips">选择查询地区</div>
+            <div class="region-picker-labels">选择查询地区</div>
             <div class="flex flex-row align-center">
-                <div class="area-picker-clear-all">清除全部</div>
-                <div class="area-picker-sure flex flex-center">确定</div>
+                <div class="btn-clear-all">清除全部</div>
+                <div class="btn-submit flex flex-center">确定</div>
             </div>
         </div>
       
-        <div class="area-picker-selected flex flex-row flex-wrap"></div>
+        <div class="region-selected-container flex flex-row flex-wrap"></div>
       
-        <div class="area-picker-input flex flex-row align-center">
-            <input type="text" id="area-search-input" placeholder="进行区域检索" />
+        <div class="region-search flex flex-row align-center">
+            <input type="text" id="region-search-input" placeholder="进行区域检索" />
             <i class="icon-search"></i>
         </div>
       
-        <div class="area-picker-letter"></div>
-        <div class="area-picker-list flex flex-row flex-wrap align-start"></div>
+        <div class="region-letters-container"></div>
+        <div class="region-list-conatiner flex flex-row flex-wrap align-start"></div>
       </div>
     `;
     document.querySelector(container).innerHTML = template;
@@ -86,7 +86,7 @@ window.RegionPicker = function (container, options = {}) {
         template += `<span class="picker-letter-disabled">${char} </span>`;
       }
     }
-    document.querySelector(`#${Picker.ComponentId} .area-picker-letter`).innerHTML = template;
+    document.querySelector(`#${Picker.ComponentId} .region-letters-container`).innerHTML = template;
   }
 
   /**
@@ -98,22 +98,22 @@ window.RegionPicker = function (container, options = {}) {
       const icon = regionIconFixer(code);
 
       return `
-      <div class="area-picker-item">
+      <div class="region-picker-item">
         <label for="region-picker-${code}" class="flex flex-row align-center" data-code="${code}">
-          <div class="checkBox-inner">
+          <div class="region-checkbox">
               <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
-              <span class="checkBox"></span>
+              <span class="region-checkbox-elem"></span>
           </div>
           <img src="${Picker.BaseDir}assets/region-icon/${icon}.svg" loading="lazy" alt="${cname}" />
           <div class="flex flex-col">
-              <div class="area-picker-item-zh">${cname}</div>
-              <div class="area-picker-item-en">${name}</div>
+              <div class="region-picker-item-cname">${cname}</div>
+              <div class="region-picker-item-name">${name}</div>
           </div>
         </label>
       </div>`;
     });
 
-    document.querySelector(`#${Picker.ComponentId} .area-picker-list`).innerHTML = template.join("");
+    document.querySelector(`#${Picker.ComponentId} .region-list-conatiner`).innerHTML = template.join("");
   }
 
   /**
@@ -122,16 +122,16 @@ window.RegionPicker = function (container, options = {}) {
    * @param {array} regionList
    */
   function filterRegionListByChar(charSelected) {
-    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .area-picker-item`);
+    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .region-picker-item`);
     areaPickerItems.forEach((item) => {
       if (charSelected === "*") {
         item.classList.remove("hide");
         return;
       }
 
-      const enName = item.querySelector(".area-picker-item-en").innerText;
+      const name = item.querySelector(".region-picker-item-name").innerText;
       const code = item.querySelector("label").getAttribute("data-code");
-      if (enName.startsWith(charSelected) || code.startsWith(charSelected)) {
+      if (name.startsWith(charSelected) || code.startsWith(charSelected)) {
         item.classList.remove("hide");
       } else {
         item.classList.add("hide");
@@ -147,14 +147,14 @@ window.RegionPicker = function (container, options = {}) {
       const { cname, code } = item;
       item.icon = regionIconFixer(code);
       return `
-      <div class="area-picker-selected-item flex flex-row flex-center" data-code="${code}">
+      <div class="region-item-selected flex flex-row flex-center" data-code="${code}">
         <span>${cname}</span>
-        <img class="area-picker-selected-close" src="${Picker.BaseDir}assets/region-selector/close.svg" alt="" />
+        <img class="btn-remove-selected" src="${Picker.BaseDir}assets/region-selector/close.svg" alt="" />
       </div>`;
     });
 
     Feedback();
-    document.querySelector(`#${Picker.ComponentId} .area-picker-selected`).innerHTML = template.join("");
+    document.querySelector(`#${Picker.ComponentId} .region-selected-container`).innerHTML = template.join("");
   }
 
   /**
@@ -176,11 +176,11 @@ window.RegionPicker = function (container, options = {}) {
    */
   function handlePickerSelected() {
     // handle clear single item
-    document.querySelector(`#${Picker.ComponentId} .area-picker-selected`).addEventListener("click", (e) => {
+    document.querySelector(`#${Picker.ComponentId} .region-selected-container`).addEventListener("click", (e) => {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
-      if (!classname || classname.trim() != "area-picker-selected-close") return;
+      if (!classname || classname.trim() != "btn-remove-selected") return;
       const code = target.parentElement.getAttribute("data-code");
       removeSelectedRegion(code);
       UpdatePickerSelected();
@@ -191,7 +191,7 @@ window.RegionPicker = function (container, options = {}) {
     });
 
     // handle clear all
-    document.querySelector(`#${Picker.ComponentId} .area-picker-clear-all`).addEventListener("click", (e) => {
+    document.querySelector(`#${Picker.ComponentId} .btn-clear-all`).addEventListener("click", (e) => {
       e.preventDefault();
       Picker.Selected = [];
       UpdatePickerSelected();
@@ -203,12 +203,12 @@ window.RegionPicker = function (container, options = {}) {
   }
 
   function handlePickerList() {
-    document.querySelector(`#${Picker.ComponentId} .area-picker-list`).addEventListener("click", (e) => {
+    document.querySelector(`#${Picker.ComponentId} .region-list-conatiner`).addEventListener("click", (e) => {
       const target = e.target;
       // const classname = target.getAttribute("class");
-      // if (!classname || classname.trim() != "checkBox") return;
+      // if (!classname || classname.trim() != "region-checkbox-elem") return;
       const label = target.closest("label");
-      if (!label || !label.matches(".area-picker-item label")) return;
+      if (!label || !label.matches(".region-picker-item label")) return;
       // TODO
       // The current DOM structure design makes it necessary to use asynchronous fetching,
       // which may be adjusted and optimized to avoid potential problems
@@ -225,7 +225,7 @@ window.RegionPicker = function (container, options = {}) {
 
   // picker click
   function handlePickerLetterClick() {
-    const letterContainer = document.querySelector(`#${Picker.ComponentId} .area-picker-letter`);
+    const letterContainer = document.querySelector(`#${Picker.ComponentId} .region-letters-container`);
     const letterLabels = Array.from(letterContainer.querySelectorAll(".picker-letter"));
     letterContainer.addEventListener("click", (e) => {
       e.preventDefault();
@@ -248,8 +248,8 @@ window.RegionPicker = function (container, options = {}) {
 
   // search area
   function handleSearch() {
-    const searchInput = document.getElementById("area-search-input");
-    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .area-picker-item`);
+    const searchInput = document.getElementById("region-search-input");
+    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .region-picker-item`);
 
     searchInput.addEventListener("input", () => {
       const searchTerm = (searchInput.value || "").trim().toLowerCase();
@@ -259,12 +259,12 @@ window.RegionPicker = function (container, options = {}) {
         return;
       }
 
-      const letterLabels = Array.from(document.querySelectorAll(`#${Picker.ComponentId} .area-picker-letter .picker-letter`));
+      const letterLabels = Array.from(document.querySelectorAll(`#${Picker.ComponentId} .region-letters-container .picker-letter`));
       letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
 
       areaPickerItems.forEach((item) => {
-        const zhName = item.querySelector(".area-picker-item-zh").innerText;
-        const enName = item.querySelector(".area-picker-item-en").innerText.toLowerCase();
+        const zhName = item.querySelector(".region-picker-item-cname").innerText;
+        const enName = item.querySelector(".region-picker-item-name").innerText.toLowerCase();
 
         if (zhName.includes(searchTerm) || enName.includes(searchTerm)) {
           item.classList.remove("hide");
