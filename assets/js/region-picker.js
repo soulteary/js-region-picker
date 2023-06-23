@@ -1,17 +1,27 @@
-window.RegionPicker = (function () {
-  var RegionPicker = {
-    Show: showPicker,
-    Hide: hidePicker,
-    GetSelected: function () {
-      return this.Selected;
-    },
-
-    options: {},
+window.RegionPicker = function (container, options = {}) {
+  var Picker = {
+    // expose states
+    ComponentId: "",
+    Options: {},
     BaseDir: "",
     Selected: null,
     RegionList: null,
-    ComponentId: "",
+    // expose functions
+    GetSelected: GetSelected,
+    Show: ShowPicker,
+    Hide: HidePicker,
   };
+
+  function GetSelected() {
+    return this.Selected;
+  }
+
+  function Feedback() {
+    if (Picker.Options && Picker.Options.updater && typeof Picker.Options.updater === "function") {
+      Picker.Selected.sort((a, b) => a - b);
+      Picker.Options.updater(Picker, Picker.Selected);
+    }
+  }
 
   /**
    * fix the region icon code
@@ -28,11 +38,11 @@ window.RegionPicker = (function () {
     return code;
   }
 
-  function initBaseContainer(container, componentId) {
+  function InitBaseContainer(container, componentId) {
     const template = `
       <div id="${componentId}" class="picker-box area-picker hide">
         <div class="flex flex-row align-center justify-between">
-            <div class="area-picker-tips">选择查询地区（支持多选）</div>
+            <div class="area-picker-tips">选择查询地区</div>
             <div class="flex flex-row align-center">
                 <div class="area-picker-clear-all">清除全部</div>
                 <div class="area-picker-sure flex flex-center">确定</div>
@@ -42,7 +52,7 @@ window.RegionPicker = (function () {
         <div class="area-picker-selected flex flex-row flex-wrap"></div>
       
         <div class="area-picker-input flex flex-row align-center">
-            <input type="text" id="area-search-input" placeholder="检索国家或地区的中英文名称" />
+            <input type="text" id="area-search-input" placeholder="进行区域检索" />
             <i class="icon-search"></i>
         </div>
       
@@ -53,19 +63,19 @@ window.RegionPicker = (function () {
     document.querySelector(container).innerHTML = template;
   }
 
+  function GetFirstUpperLetter(str) {
+    return (str || "").slice(0, 1).toUpperCase();
+  }
+
   /**
    * Generate the region picker letters template
-   *
-   * @param {array} regionList
    */
-  function initRegionPickerLetters(regionList) {
-    const firstLettersDict = regionList
-      .map((item, _) => [item.name.slice(0, 1).toUpperCase(), item.code.slice(0, 1).toUpperCase()])
-      .reduce((prev, item) => {
-        prev[item[0]] = true;
-        prev[item[1]] = true;
-        return prev;
-      }, {});
+  function InitRegionPickerLetters() {
+    const firstLettersDict = Picker.RegionList.map((item, _) => [GetFirstUpperLetter(item.name), GetFirstUpperLetter(item.code)]).reduce((prev, item) => {
+      prev[item[0]] = true;
+      prev[item[1]] = true;
+      return prev;
+    }, {});
 
     let template = "";
     for (let i = 65; i <= 90; i++) {
@@ -76,16 +86,14 @@ window.RegionPicker = (function () {
         template += `<span class="picker-letter-disabled">${char} </span>`;
       }
     }
-    document.querySelector(".area-picker-letter").innerHTML = template;
+    document.querySelector(`#${Picker.ComponentId} .area-picker-letter`).innerHTML = template;
   }
 
   /**
    * Generate the region list template
-   *
-   * @param {array} regionList
    */
-  function initRegionList(regionList) {
-    const template = regionList.map((item, _) => {
+  function InitRegionList() {
+    const template = Picker.RegionList.map((item, _) => {
       const { code, cname, name } = item;
       const icon = regionIconFixer(code);
 
@@ -96,7 +104,7 @@ window.RegionPicker = (function () {
               <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
               <span class="checkBox"></span>
           </div>
-          <img src="${RegionPicker.BaseDir}assets/region-icon/${icon}.svg" loading="lazy" alt="${cname}" />
+          <img src="${Picker.BaseDir}assets/region-icon/${icon}.svg" loading="lazy" alt="${cname}" />
           <div class="flex flex-col">
               <div class="area-picker-item-zh">${cname}</div>
               <div class="area-picker-item-en">${name}</div>
@@ -105,7 +113,7 @@ window.RegionPicker = (function () {
       </div>`;
     });
 
-    document.querySelector(`#${RegionPicker.ComponentId} .area-picker-list`).innerHTML = template.join("");
+    document.querySelector(`#${Picker.ComponentId} .area-picker-list`).innerHTML = template.join("");
   }
 
   /**
@@ -133,23 +141,19 @@ window.RegionPicker = (function () {
 
   /**
    * Update picker selected template
-   *
-   * @param {array} regionList
    */
-  function updatePickerSelected(regionList) {
-    const template = regionList.map((item, _) => {
+  function updatePickerSelected() {
+    const template = Picker.Selected.map((item, _) => {
       const { cname, code } = item;
       item.icon = regionIconFixer(code);
       return `
       <div class="area-picker-selected-item flex flex-row flex-center" data-code="${code}">
         <span>${cname}</span>
-        <img class="area-picker-selected-close" src="${RegionPicker.BaseDir}assets/region-selector/close.svg" alt="" />
+        <img class="area-picker-selected-close" src="${Picker.BaseDir}assets/region-selector/close.svg" alt="" />
       </div>`;
     });
 
-    if (RegionPicker && RegionPicker.options && RegionPicker.options.updater && typeof RegionPicker.options.updater === "function") {
-      RegionPicker.options.updater(RegionPicker, regionList);
-    }
+    Feedback();
     document.querySelector(".area-picker-selected").innerHTML = template.join("");
   }
 
@@ -160,11 +164,11 @@ window.RegionPicker = (function () {
    */
   function removeSelectedRegion(code) {
     if (!code) return;
-    const regionList = RegionPicker.Selected;
+    const regionList = Picker.Selected;
     const index = regionList.findIndex((item) => item.code === code);
     regionList.splice(index, 1);
-    RegionPicker.Selected = regionList;
-    updatePickerSelected(RegionPicker.Selected);
+    Picker.Selected = regionList;
+    updatePickerSelected();
   }
 
   /**
@@ -179,7 +183,7 @@ window.RegionPicker = (function () {
       if (!classname || classname.trim() != "area-picker-selected-close") return;
       const code = target.parentElement.getAttribute("data-code");
       removeSelectedRegion(code);
-      updatePickerSelected(RegionPicker.Selected);
+      updatePickerSelected();
 
       Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         if (item.value === code) item.checked = false;
@@ -189,8 +193,8 @@ window.RegionPicker = (function () {
     // handle clear all
     document.querySelector(".area-picker-clear-all").addEventListener("click", (e) => {
       e.preventDefault();
-      RegionPicker.Selected = [];
-      updatePickerSelected(RegionPicker.Selected);
+      Picker.Selected = [];
+      updatePickerSelected();
 
       Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         item.checked = false;
@@ -213,8 +217,8 @@ window.RegionPicker = (function () {
           .filter((item) => item.checked)
           .map((item) => item.value);
 
-        RegionPicker.Selected = RegionPicker.RegionList.filter((item) => selected.includes(item.code));
-        updatePickerSelected(RegionPicker.Selected);
+        Picker.Selected = Picker.RegionList.filter((item) => selected.includes(item.code));
+        updatePickerSelected();
       }, 10);
     });
   }
@@ -274,30 +278,32 @@ window.RegionPicker = (function () {
   /**
    * Show the region picker
    */
-  function showPicker() {
-    document.getElementById(RegionPicker.ComponentId).classList.remove("hide");
+  function ShowPicker() {
+    const container = document.getElementById(Picker.ComponentId);
+    container.className = container.className.replace(/\s?hide/g, "");
   }
 
   /**
    * Hide the region picker
    */
-  function hidePicker() {
-    document.getElementById(RegionPicker.ComponentId).classList.add("hide");
+  function HidePicker() {
+    const container = document.getElementById(Picker.ComponentId);
+    container.className = container.className + " hide";
   }
 
-  function bootstrap(container, options) {
+  function Bootstrap(container, options) {
     const { data: regionList, baseDir, preselected } = options;
     const componentId = "region-picker-" + Math.random().toString(36).slice(-6);
-    RegionPicker.ComponentId = componentId;
-    RegionPicker.RegionList = regionList;
-    RegionPicker.options = options;
+    Picker.ComponentId = componentId;
+    Picker.RegionList = regionList;
+    Picker.Options = options;
     if (baseDir != "") {
-      RegionPicker.BaseDir = baseDir + "/";
+      Picker.BaseDir = baseDir + "/";
     }
 
-    initBaseContainer(container, componentId);
-    initRegionPickerLetters(regionList);
-    initRegionList(regionList);
+    InitBaseContainer(container, componentId);
+    InitRegionPickerLetters();
+    InitRegionList();
 
     handlePickerSelected();
     handlePickerList();
@@ -307,10 +313,10 @@ window.RegionPicker = (function () {
     if (preselected) {
       const selected = regionList.filter((item) => preselected == item.code);
       if (selected.length == 1) {
-        RegionPicker.Selected = [selected[0]];
-        updatePickerSelected(RegionPicker.Selected);
+        Picker.Selected = [selected[0]];
+        updatePickerSelected();
 
-        RegionPicker.Selected.forEach((selected) => {
+        Picker.Selected.forEach((selected) => {
           Array.from(document.getElementsByName("region-picker")).forEach((item) => {
             if (item.value === selected.code) item.checked = true;
           });
@@ -318,8 +324,10 @@ window.RegionPicker = (function () {
       }
     }
 
-    return RegionPicker;
+    Feedback();
+
+    return Picker;
   }
 
-  return bootstrap;
-})();
+  return Bootstrap(container, options);
+};
