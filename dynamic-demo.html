@@ -6,11 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Demo</title>
 
-    <link rel="stylesheet" href="assets/css/common.css">
-    <link rel="stylesheet" href="assets/css/region-picker.css">
+    <link rel="stylesheet" href="assets/css/region-picker.min.css">
     <script src="mock/region-data.js"></script>
 
     <style>
+        * {
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -moz-tap-highlight-color: rgba(0, 0, 0, 0);
+            -ms-tap-highlight-color: rgba(0, 0, 0, 0);
+            -o-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        *,
+        *:before,
+        *:after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            position: relative;
+            margin: 0 auto;
+            font: 12px "Noto Sans SC", "Open Sans";
+            background-color: #ffffff;
+            color: #333333;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -moz-tap-highlight-color: rgba(0, 0, 0, 0);
+            -ms-tap-highlight-color: rgba(0, 0, 0, 0);
+            -o-tap-highlight-color: rgba(0, 0, 0, 0);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-font-smoothing: antialiased;
+            -ms-font-smoothing: antialiased;
+            -o-font-smoothing: antialiased;
+        }
+
+        html,
+        body {
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+
+
         .demo body {
             width: 100vw;
             height: 100vh;
@@ -80,11 +121,13 @@
         <!-- container for region picker -->
     </div>
 
-    <script src="assets/js/region-picker.js"></script>
+    <script src="assets/js/region-picker.min.js"></script>
     <script>
-        let instance = RegionPicker("#container", { data: window.RegionOptions.region, baseDir: "", preselected: "cn", updater: function(data){
-            console.log(data)
-        } });
+        let instance = RegionPicker("#container", {
+            data: window.RegionOptions.region, baseDir: "", preselected: "cn", updater: function (data) {
+                console.log(data)
+            }
+        });
         document.getElementById('show-modal').addEventListener('click', instance.Show);
         document.getElementById('hide-modal').addEventListener('click', instance.Hide);
         document.getElementById('show-modal').click(); // switch modal to show instead of hide (default)

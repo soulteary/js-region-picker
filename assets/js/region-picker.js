@@ -158,7 +158,7 @@ window.RegionPicker = function (container, options = {}) {
       return `
       <div class="region-item-selected flex flex-row flex-center" data-code="${code}">
         <span>${cname}</span>
-        <img class="clickable btn-remove-selected" src="${Picker.BaseDir}assets/region-selector/close.svg" alt="" />
+        <img class="clickable btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
       </div>`;
     });
 
