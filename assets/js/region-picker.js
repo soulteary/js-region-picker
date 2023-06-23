@@ -4,8 +4,8 @@ window.RegionPicker = function (container, options = {}) {
     ComponentId: "",
     Options: {},
     BaseDir: "",
-    Selected: null,
-    RegionList: null,
+    Selected: [],
+    RegionList: [],
     // expose functions
     GetSelected: GetSelected,
     Show: ShowPicker,
@@ -122,7 +122,7 @@ window.RegionPicker = function (container, options = {}) {
    * @param {array} regionList
    */
   function filterRegionListByChar(charSelected) {
-    const areaPickerItems = document.querySelectorAll(".area-picker-item");
+    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .area-picker-item`);
     areaPickerItems.forEach((item) => {
       if (charSelected === "*") {
         item.classList.remove("hide");
@@ -154,7 +154,7 @@ window.RegionPicker = function (container, options = {}) {
     });
 
     Feedback();
-    document.querySelector(".area-picker-selected").innerHTML = template.join("");
+    document.querySelector(`#${Picker.ComponentId} .area-picker-selected`).innerHTML = template.join("");
   }
 
   /**
@@ -176,7 +176,7 @@ window.RegionPicker = function (container, options = {}) {
    */
   function handlePickerSelected() {
     // handle clear single item
-    document.querySelector(".area-picker-selected").addEventListener("click", (e) => {
+    document.querySelector(`#${Picker.ComponentId} .area-picker-selected`).addEventListener("click", (e) => {
       e.preventDefault();
       const target = e.target;
       const classname = target.getAttribute("class");
@@ -191,7 +191,7 @@ window.RegionPicker = function (container, options = {}) {
     });
 
     // handle clear all
-    document.querySelector(".area-picker-clear-all").addEventListener("click", (e) => {
+    document.querySelector(`#${Picker.ComponentId} .area-picker-clear-all`).addEventListener("click", (e) => {
       e.preventDefault();
       Picker.Selected = [];
       updatePickerSelected();
@@ -203,7 +203,7 @@ window.RegionPicker = function (container, options = {}) {
   }
 
   function handlePickerList() {
-    document.querySelector(".area-picker-list").addEventListener("click", (e) => {
+    document.querySelector(`#${Picker.ComponentId} .area-picker-list`).addEventListener("click", (e) => {
       const target = e.target;
       // const classname = target.getAttribute("class");
       // if (!classname || classname.trim() != "checkBox") return;
@@ -225,7 +225,7 @@ window.RegionPicker = function (container, options = {}) {
 
   // picker click
   function handlePickerLetterClick() {
-    const letterContainer = document.querySelector(".area-picker-letter");
+    const letterContainer = document.querySelector(`#${Picker.ComponentId} .area-picker-letter`);
     const letterLabels = Array.from(letterContainer.querySelectorAll(".picker-letter"));
     letterContainer.addEventListener("click", (e) => {
       e.preventDefault();
@@ -249,7 +249,7 @@ window.RegionPicker = function (container, options = {}) {
   // search area
   function handleSearch() {
     const searchInput = document.getElementById("area-search-input");
-    const areaPickerItems = document.querySelectorAll(".area-picker-item");
+    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .area-picker-item`);
 
     searchInput.addEventListener("input", () => {
       const searchTerm = (searchInput.value || "").trim().toLowerCase();
@@ -259,7 +259,7 @@ window.RegionPicker = function (container, options = {}) {
         return;
       }
 
-      const letterLabels = Array.from(document.querySelectorAll(".area-picker-letter .picker-letter"));
+      const letterLabels = Array.from(document.querySelectorAll(`#${Picker.ComponentId} .area-picker-letter .picker-letter`));
       letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
 
       areaPickerItems.forEach((item) => {
@@ -292,11 +292,14 @@ window.RegionPicker = function (container, options = {}) {
   }
 
   function Bootstrap(container, options) {
-    const { data: regionList, baseDir, preselected } = options;
     const componentId = "region-picker-" + Math.random().toString(36).slice(-6);
     Picker.ComponentId = componentId;
-    Picker.RegionList = regionList;
+
     Picker.Options = options;
+    const { data, baseDir, preselected } = options;
+
+    Picker.RegionList = data;
+
     if (baseDir != "") {
       Picker.BaseDir = baseDir + "/";
     }
@@ -311,7 +314,7 @@ window.RegionPicker = function (container, options = {}) {
     handleSearch();
 
     if (preselected) {
-      const selected = regionList.filter((item) => preselected == item.code);
+      const selected = Picker.RegionList.filter((item) => preselected == item.code);
       if (selected.length == 1) {
         Picker.Selected = [selected[0]];
         updatePickerSelected();
