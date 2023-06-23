@@ -96,7 +96,7 @@ window.RegionPicker = (function () {
               <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
               <span class="checkBox"></span>
           </div>
-          <img src="${RegionPicker.BaseDir}assets/region-icon/${icon}.svg" alt="${cname}" />
+          <img src="${RegionPicker.BaseDir}assets/region-icon/${icon}.svg" loading="lazy" alt="${cname}" />
           <div class="flex flex-col">
               <div class="area-picker-item-zh">${cname}</div>
               <div class="area-picker-item-en">${name}</div>

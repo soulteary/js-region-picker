@@ -124,19 +124,6 @@ a {
     color: #667190;
 }
 
-.arrow-down {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-    -webkit-transition: transform 0.1s ease-in;
-    -moz-transition: transform 0.1s ease-in;
-    -ms-transition: transform 0.1s ease-in;
-    -o-transition: transform 0.1s ease-in;
-    transition: transform 0.1s ease-in;
-}
-
 .close {
     position: absolute;
     top: 20.5px;
