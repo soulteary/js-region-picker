@@ -1,5 +1,17 @@
-.region-picker-container.hide,.region-picker-container .hide {
+.region-picker-container.hide,
+.region-picker-container .hide {
   display: none;
+}
+
+.region-picker-container .clickable {
+  cursor: pointer;
+}
+
+.region-picker-container .no-select {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .region-picker-container {
@@ -27,7 +39,6 @@
   line-height: 18px;
   color: #428eff;
   margin-right: 24px;
-  cursor: pointer;
 }
 
 .region-picker-container .btn-submit {
@@ -40,17 +51,16 @@
   font-size: 14px;
   line-height: 18px;
   color: #ffffff;
-  cursor: pointer;
 }
 
 .region-picker-container .region-selected-container {
   margin-top: 16px;
   min-height: 30px;
-  -webkit-transition: height 0.1s ease 0s;
-  -moz-transition: height 0.1s ease 0s;
-  -ms-transition: height 0.1s ease 0s;
-  -o-transition: height 0.1s ease 0s;
-  transition: height 0.1s ease 0s;
+  -webkit-transition: height 0.8s ease 0s;
+  -moz-transition: height 0.8s ease 0s;
+  -ms-transition: height 0.8s ease 0s;
+  -o-transition: height 0.8s ease 0s;
+  transition: height 0.8s ease 0s;
 }
 
 .region-picker-container .region-item-selected {
@@ -67,14 +77,12 @@
   font-weight: 400;
   font-size: 12px;
   color: #21293c;
-  user-select: none;
 }
 
 .region-picker-container .btn-remove-selected {
   width: 13px;
   height: 13px;
   margin-left: 5px;
-  cursor: pointer;
 }
 
 .region-picker-container .region-search {
@@ -123,9 +131,7 @@
   line-height: 16px;
   color: #667190;
   margin-left: 4px;
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
+
 }
 
 .region-picker-container .region-letters-container span.picker-letter-active {
@@ -185,10 +191,7 @@
   -ms-text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+
 }
 
 .region-picker-container .region-picker-item-name {
@@ -205,15 +208,22 @@
   -ms-text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 .region-picker-container input[type="checkbox"] {
   display: none;
   visibility: hidden;
+}
+
+.region-picker-item:hover .region-checkbox-elem{
+  background: #f8f8f8;
+  border: 0.5px solid #94989d;
+
+  -webkit-transition: background 0.3s ease-in 0.05s;
+  -moz-transition: background 0.3s ease-in 0.05s;
+  -ms-transition: background 0.3s ease-in 0.05s;
+  -o-transition: background 0.3s ease-in 0.05s;
+  transition: background 0.3s ease-in 0.05s;
 }
 
 .region-picker-container .region-checkbox-elem {
