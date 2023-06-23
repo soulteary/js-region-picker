@@ -142,7 +142,7 @@ window.RegionPicker = function (container, options = {}) {
   /**
    * Update picker selected template
    */
-  function updatePickerSelected() {
+  function UpdatePickerSelected() {
     const template = Picker.Selected.map((item, _) => {
       const { cname, code } = item;
       item.icon = regionIconFixer(code);
@@ -168,7 +168,7 @@ window.RegionPicker = function (container, options = {}) {
     const index = regionList.findIndex((item) => item.code === code);
     regionList.splice(index, 1);
     Picker.Selected = regionList;
-    updatePickerSelected();
+    UpdatePickerSelected();
   }
 
   /**
@@ -183,7 +183,7 @@ window.RegionPicker = function (container, options = {}) {
       if (!classname || classname.trim() != "area-picker-selected-close") return;
       const code = target.parentElement.getAttribute("data-code");
       removeSelectedRegion(code);
-      updatePickerSelected();
+      UpdatePickerSelected();
 
       Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         if (item.value === code) item.checked = false;
@@ -194,7 +194,7 @@ window.RegionPicker = function (container, options = {}) {
     document.querySelector(`#${Picker.ComponentId} .area-picker-clear-all`).addEventListener("click", (e) => {
       e.preventDefault();
       Picker.Selected = [];
-      updatePickerSelected();
+      UpdatePickerSelected();
 
       Array.from(document.getElementsByName("region-picker")).forEach((item) => {
         item.checked = false;
@@ -218,7 +218,7 @@ window.RegionPicker = function (container, options = {}) {
           .map((item) => item.value);
 
         Picker.Selected = Picker.RegionList.filter((item) => selected.includes(item.code));
-        updatePickerSelected();
+        UpdatePickerSelected();
       }, 10);
     });
   }
@@ -314,17 +314,27 @@ window.RegionPicker = function (container, options = {}) {
     handleSearch();
 
     if (preselected) {
-      const selected = Picker.RegionList.filter((item) => preselected == item.code);
-      if (selected.length == 1) {
-        Picker.Selected = [selected[0]];
-        updatePickerSelected();
-
-        Picker.Selected.forEach((selected) => {
-          Array.from(document.getElementsByName("region-picker")).forEach((item) => {
-            if (item.value === selected.code) item.checked = true;
-          });
-        });
+      if (typeof preselected == "string") {
+        const userPreSelected = preselected.toLowerCase().trim();
+        // select all item
+        if (userPreSelected == "all") {
+          Picker.Selected = Picker.RegionList;
+        } else {
+          Picker.Selected = Picker.RegionList.filter((item) => userPreSelected == item.code);
+        }
+      } else {
+        // handle array
+        const userPreSelected = preselected.map((item) => item.toLowerCase().trim());
+        Picker.Selected = Picker.RegionList.filter((item) => userPreSelected.includes(item.code));
       }
+
+      UpdatePickerSelected();
+
+      Array.from(document.querySelectorAll(`#${Picker.ComponentId} input[name=region-picker]`)).forEach((item) => {
+        Picker.Selected.forEach((selected) => {
+          if (item.value === selected.code) item.checked = true;
+        });
+      });
     }
 
     Feedback();
