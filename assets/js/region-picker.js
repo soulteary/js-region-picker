@@ -28,7 +28,7 @@ window.RegionPicker = function (container, options = {}) {
         }
         return 0;
       });
-      Picker.Options.updater(Picker, Picker.Selected);
+      Picker.Options.updater(Picker.Selected, Picker);
     }
   }
 
@@ -49,26 +49,26 @@ window.RegionPicker = function (container, options = {}) {
 
   function InitBaseContainer(container, componentId) {
     const template = `
-      <div id="${componentId}" class="region-picker-container hide">
-        <div class="flex flex-row align-center justify-between">
-            <div class="region-picker-labels no-select">选择查询地区</div>
-            <div class="flex flex-row align-center">
-                <div class="clickable no-select btn-clear-all">清除全部</div>
-                <div class="clickable no-select btn-submit flex flex-center">确定</div>
-            </div>
+        <div id="${componentId}" class="region-picker-container hide">
+          <div class="flex flex-row align-center justify-between">
+              <div class="region-picker-labels no-select">选择查询地区</div>
+              <div class="flex flex-row align-center">
+                  <div class="clickable no-select btn-clear-all">清除全部</div>
+                  <div class="clickable no-select btn-submit flex flex-center">确定</div>
+              </div>
+          </div>
+
+          <div class="region-selected-container no-select flex flex-row flex-wrap"></div>
+
+          <div class="region-search flex flex-row align-center">
+              <input type="text" id="region-search-input" placeholder="进行区域检索" />
+              <i class="icon-search"></i>
+          </div>
+
+          <div class="region-letters-container no-select "></div>
+          <div class="region-list-conatiner no-select flex flex-row flex-wrap align-start"></div>
         </div>
-      
-        <div class="region-selected-container no-select flex flex-row flex-wrap"></div>
-      
-        <div class="region-search flex flex-row align-center">
-            <input type="text" id="region-search-input" placeholder="进行区域检索" />
-            <i class="icon-search"></i>
-        </div>
-      
-        <div class="region-letters-container no-select "></div>
-        <div class="region-list-conatiner no-select flex flex-row flex-wrap align-start"></div>
-      </div>
-    `;
+      `;
     document.querySelector(container).innerHTML = template;
   }
 
@@ -107,19 +107,19 @@ window.RegionPicker = function (container, options = {}) {
       const icon = regionIconFixer(code);
 
       return `
-      <div class="region-picker-item">
-        <label for="region-picker-${code}" class="clickable flex flex-row align-center" data-code="${code}">
-          <div class="region-checkbox">
-              <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
-              <span class="region-checkbox-elem"></span>
-          </div>
-          <img src="${Picker.BaseDir}assets/region-icon/${icon}.svg" loading="lazy" alt="${cname}" />
-          <div class="flex flex-col">
-              <div class="region-picker-item-cname">${cname}</div>
-              <div class="region-picker-item-name">${name}</div>
-          </div>
-        </label>
-      </div>`;
+        <div class="region-picker-item">
+          <label for="region-picker-${code}" class="clickable flex flex-row align-center" data-code="${code}">
+            <div class="region-checkbox">
+                <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" />
+                <span class="region-checkbox-elem"></span>
+            </div>
+            <img src="${Picker.BaseDir}assets/region-icon/${icon}.svg" loading="lazy" alt="${cname}" />
+            <div class="flex flex-col">
+                <div class="region-picker-item-cname">${cname}</div>
+                <div class="region-picker-item-name">${name}</div>
+            </div>
+          </label>
+        </div>`;
     });
 
     document.querySelector(`#${Picker.ComponentId} .region-list-conatiner`).innerHTML = template.join("");
@@ -156,10 +156,10 @@ window.RegionPicker = function (container, options = {}) {
       const { cname, code } = item;
       item.icon = regionIconFixer(code);
       return `
-      <div class="region-item-selected flex flex-row flex-center" data-code="${code}">
-        <span>${cname}</span>
-        <img class="clickable btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
-      </div>`;
+        <div class="region-item-selected flex flex-row flex-center" data-code="${code}">
+          <span>${cname}</span>
+          <img class="clickable btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
+        </div>`;
     });
 
     if (Picker.TriggerEachClick) {
@@ -180,37 +180,51 @@ window.RegionPicker = function (container, options = {}) {
     const index = regionList.findIndex((item) => item.code === code);
     regionList.splice(index, 1);
     Picker.Selected = regionList;
-    UpdatePickerSelected();
   }
 
   /**
    * Handle the region picker selected close icon click event
    */
   function handlePickerSelected() {
-    // handle clear single item
-    document.querySelector(`#${Picker.ComponentId} .region-selected-container`).addEventListener("click", (e) => {
-      e.preventDefault();
+    const container = document.getElementById(Picker.ComponentId);
+    container.addEventListener("click", (e) => {
       const target = e.target;
-      const classname = (target.className || "").trim();
-      if (classname.indexOf("btn-remove-selected") === -1) return;
-      const code = target.parentElement.getAttribute("data-code");
-      removeSelectedRegion(code);
-      UpdatePickerSelected();
+      if (!target) return;
 
-      Array.from(document.getElementsByName("region-picker")).forEach((item) => {
-        if (item.value === code) item.checked = false;
-      });
-    });
+      // handle clear single item
+      const selectedContainer = target.closest(".region-selected-container");
+      if (selectedContainer) {
+        const classname = (target.className || "").trim();
+        if (classname.indexOf("btn-remove-selected") === -1) return;
+        const code = target.parentElement.getAttribute("data-code");
+        removeSelectedRegion(code);
+        UpdatePickerSelected();
+        Array.from(document.getElementsByName("region-picker")).forEach((item) => {
+          if (item.value === code) item.checked = false;
+        });
+        return;
+      }
 
-    // handle clear all
-    document.querySelector(`#${Picker.ComponentId} .btn-clear-all`).addEventListener("click", (e) => {
-      e.preventDefault();
-      Picker.Selected = [];
-      UpdatePickerSelected();
+      // handle clear all
+      const btnClearall = target.closest(".btn-clear-all");
+      if (btnClearall) {
+        e.preventDefault();
+        Picker.Selected = [];
+        UpdatePickerSelected();
+        Array.from(document.getElementsByName("region-picker")).forEach((item) => {
+          item.checked = false;
+        });
+        return;
+      }
 
-      Array.from(document.getElementsByName("region-picker")).forEach((item) => {
-        item.checked = false;
-      });
+      // handle submit
+      const btnSubmit = target.closest(".btn-submit");
+      if (btnSubmit) {
+        e.preventDefault();
+        Feedback();
+        HidePicker();
+        return;
+      }
     });
   }
 
@@ -287,14 +301,6 @@ window.RegionPicker = function (container, options = {}) {
     });
   }
 
-  function handleSubmit() {
-    const btnSubmit = document.querySelector(`#${Picker.ComponentId} .btn-submit`);
-    btnSubmit.addEventListener("click", () => {
-      Feedback();
-      HidePicker();
-    });
-  }
-
   /**
    * Show the region picker
    */
@@ -309,6 +315,8 @@ window.RegionPicker = function (container, options = {}) {
   function HidePicker() {
     const container = document.getElementById(Picker.ComponentId);
     container.className = container.className + " hide";
+
+    Feedback();
   }
 
   function Bootstrap(container, options) {
@@ -333,7 +341,6 @@ window.RegionPicker = function (container, options = {}) {
     handlePickerList();
     handlePickerLetterClick();
     handleSearch();
-    handleSubmit();
 
     if (preselected) {
       if (typeof preselected == "string") {

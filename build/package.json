@@ -1,8 +1,8 @@
 {
-  "name": "js-year-picker",
+  "name": "js-region-picker",
   "version": "1.0.0",
   "private": true,
-  "description": "A JavaScript Year Range Picker written by vanilla JS.",
+  "description": "A JavaScript Region Range Picker written by vanilla JS.",
   "scripts": {
     "build": "npx google-closure-compiler --js ../assets/js/region-picker.js --language_out=ECMASCRIPT5 --js_output_file ../assets/js/region-picker.min.js --isolation_mode=IIFE"
   },
