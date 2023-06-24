@@ -6,6 +6,7 @@ window.RegionPicker = function (container, options = {}) {
     BaseDir: "",
     Selected: [],
     RegionList: [],
+    Visiable: false,
     // expose functions
     GetSelected: GetSelected,
     Show: ShowPicker,
@@ -47,8 +48,9 @@ window.RegionPicker = function (container, options = {}) {
   }
 
   function InitBaseContainer(container, componentId) {
+    const visiableClass = Picker.Visiable ? "" : "hide";
     const template = `
-        <div id="${componentId}" class="region-picker-container hide">
+        <div id="${componentId}" class="region-picker-container ${visiableClass}">
           <div class="flex flex-row align-center justify-between">
               <div class="region-picker-labels no-select">选择查询地区</div>
               <div class="flex flex-row align-center">
@@ -304,6 +306,7 @@ window.RegionPicker = function (container, options = {}) {
   function ShowPicker() {
     const container = document.getElementById(Picker.ComponentId);
     container.className = container.className.replace(/\s?hide/g, "");
+    Picker.Visiable = true;
   }
 
   /**
@@ -312,7 +315,7 @@ window.RegionPicker = function (container, options = {}) {
   function HidePicker() {
     const container = document.getElementById(Picker.ComponentId);
     container.className = container.className + " hide";
-
+    Picker.Visiable = false;
     Feedback("submit");
   }
 
@@ -321,9 +324,10 @@ window.RegionPicker = function (container, options = {}) {
     Picker.ComponentId = componentId;
 
     Picker.Options = options;
-    const { data, baseDir, preselected } = options;
+    const { data, baseDir, preselected, visiable } = options;
 
     Picker.RegionList = data;
+    Picker.Visiable = !!visiable;
 
     if (baseDir != "") {
       Picker.BaseDir = baseDir + "/";
