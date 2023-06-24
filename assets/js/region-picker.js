@@ -6,7 +6,6 @@ window.RegionPicker = function (container, options = {}) {
     BaseDir: "",
     Selected: [],
     RegionList: [],
-    TriggerEachClick: false,
     // expose functions
     GetSelected: GetSelected,
     Show: ShowPicker,
@@ -17,7 +16,7 @@ window.RegionPicker = function (container, options = {}) {
     return this.Selected;
   }
 
-  function Feedback() {
+  function Feedback(event) {
     if (Picker.Options && Picker.Options.updater && typeof Picker.Options.updater === "function") {
       Picker.Selected = Picker.Selected.sort((a, b) => {
         if (a.code < b.code) {
@@ -28,7 +27,7 @@ window.RegionPicker = function (container, options = {}) {
         }
         return 0;
       });
-      Picker.Options.updater(Picker.Selected, Picker);
+      Picker.Options.updater(Picker.Selected, event, Picker);
     }
   }
 
@@ -162,9 +161,7 @@ window.RegionPicker = function (container, options = {}) {
         </div>`;
     });
 
-    if (Picker.TriggerEachClick) {
-      Feedback();
-    }
+    Feedback("change");
 
     document.querySelector(`#${Picker.ComponentId} .region-selected-container`).innerHTML = template.join("");
   }
@@ -221,7 +218,7 @@ window.RegionPicker = function (container, options = {}) {
       const btnSubmit = target.closest(".btn-submit");
       if (btnSubmit) {
         e.preventDefault();
-        Feedback();
+        Feedback("submit");
         HidePicker();
         return;
       }
@@ -316,7 +313,7 @@ window.RegionPicker = function (container, options = {}) {
     const container = document.getElementById(Picker.ComponentId);
     container.className = container.className + " hide";
 
-    Feedback();
+    Feedback("submit");
   }
 
   function Bootstrap(container, options) {
@@ -324,10 +321,9 @@ window.RegionPicker = function (container, options = {}) {
     Picker.ComponentId = componentId;
 
     Picker.Options = options;
-    const { data, baseDir, preselected, triggerEachClick } = options;
+    const { data, baseDir, preselected } = options;
 
     Picker.RegionList = data;
-    Picker.TriggerEachClick = triggerEachClick || false;
 
     if (baseDir != "") {
       Picker.BaseDir = baseDir + "/";
@@ -366,7 +362,7 @@ window.RegionPicker = function (container, options = {}) {
       });
     }
 
-    Feedback();
+    Feedback("init");
 
     return Picker;
   }
