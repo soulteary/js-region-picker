@@ -54,7 +54,8 @@ window.RegionPicker = function (container, options = {}) {
           <div class="flex flex-row align-center justify-between">
               <div class="region-picker-labels no-select">选择查询地区</div>
               <div class="flex flex-row align-center">
-                  <div class="clickable no-select btn-clear-all">清除全部</div>
+                  <div class="clickable no-select btn-select-all">全选</div>
+                  <div class="clickable no-select btn-clear-all">重置</div>
                   <div class="clickable no-select btn-submit flex flex-center">确定</div>
               </div>
           </div>
@@ -198,9 +199,16 @@ window.RegionPicker = function (container, options = {}) {
         const code = target.parentElement.getAttribute("data-code");
         removeSelectedRegion(code);
         UpdatePickerSelected();
-        Array.from(document.getElementsByName("region-picker")).forEach((item) => {
-          if (item.value === code) item.checked = false;
-        });
+        UpdateRegionCheckboxSelected();
+        return;
+      }
+
+      // handle select all
+      const btnSelectall = target.closest(".btn-select-all");
+      if (btnSelectall) {
+        e.preventDefault();
+        Picker.Selected = [];
+        SetPreSelectedRegion("all");
         return;
       }
 
@@ -209,10 +217,9 @@ window.RegionPicker = function (container, options = {}) {
       if (btnClearall) {
         e.preventDefault();
         Picker.Selected = [];
-        UpdatePickerSelected();
-        Array.from(document.getElementsByName("region-picker")).forEach((item) => {
-          item.checked = false;
-        });
+        if (Picker.Options.preselected) {
+          SetPreSelectedRegion(Picker.Options.preselected);
+        }
         return;
       }
 
@@ -220,7 +227,6 @@ window.RegionPicker = function (container, options = {}) {
       const btnSubmit = target.closest(".btn-submit");
       if (btnSubmit) {
         e.preventDefault();
-        Feedback("submit");
         HidePicker();
         return;
       }
@@ -319,6 +325,34 @@ window.RegionPicker = function (container, options = {}) {
     Feedback("submit");
   }
 
+  function SetPreSelectedRegion(code) {
+    if (!code) return;
+    if (typeof code == "string") {
+      const userPreSelected = code.toLowerCase().trim();
+      // select all item
+      if (userPreSelected == "all") {
+        Picker.Selected = Picker.RegionList;
+      } else {
+        Picker.Selected = Picker.RegionList.filter((item) => userPreSelected == item.code);
+      }
+    } else {
+      // handle array
+      const userPreSelected = code.map((item) => item.toLowerCase().trim());
+      Picker.Selected = Picker.RegionList.filter((item) => userPreSelected.includes(item.code));
+    }
+
+    UpdatePickerSelected();
+    UpdateRegionCheckboxSelected();
+  }
+
+  function UpdateRegionCheckboxSelected() {
+    Array.from(document.querySelectorAll(`#${Picker.ComponentId} input[name=region-picker]`)).forEach((item) => {
+      Picker.Selected.forEach((selected) => {
+        if (item.value === selected.code) item.checked = true;
+      });
+    });
+  }
+
   function Bootstrap(container, options) {
     const componentId = "region-picker-" + Math.random().toString(36).slice(-6);
     Picker.ComponentId = componentId;
@@ -343,27 +377,7 @@ window.RegionPicker = function (container, options = {}) {
     handleSearch();
 
     if (preselected) {
-      if (typeof preselected == "string") {
-        const userPreSelected = preselected.toLowerCase().trim();
-        // select all item
-        if (userPreSelected == "all") {
-          Picker.Selected = Picker.RegionList;
-        } else {
-          Picker.Selected = Picker.RegionList.filter((item) => userPreSelected == item.code);
-        }
-      } else {
-        // handle array
-        const userPreSelected = preselected.map((item) => item.toLowerCase().trim());
-        Picker.Selected = Picker.RegionList.filter((item) => userPreSelected.includes(item.code));
-      }
-
-      UpdatePickerSelected();
-
-      Array.from(document.querySelectorAll(`#${Picker.ComponentId} input[name=region-picker]`)).forEach((item) => {
-        Picker.Selected.forEach((selected) => {
-          if (item.value === selected.code) item.checked = true;
-        });
-      });
+      SetPreSelectedRegion(preselected);
     }
 
     Feedback("init");
