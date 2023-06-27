@@ -47,6 +47,8 @@ window.RegionPicker = function (container, options = {}) {
     return code;
   }
 
+  const REGION_SELECTED_CONTAINER = ".region-selected-container";
+
   function InitBaseContainer(container, componentId) {
     const visiableClass = Picker.Visiable ? "" : "hide";
     const template = `
@@ -154,19 +156,25 @@ window.RegionPicker = function (container, options = {}) {
    * Update picker selected template
    */
   function UpdatePickerSelected() {
-    const template = Picker.Selected.map((item, _) => {
+    const OnlyOneSelected = Picker.Selected.length === 1;
+
+    const template = Picker.Selected.map((item, idx) => {
       const { cname, code } = item;
       item.icon = regionIconFixer(code);
+
+      const itemStateClass = idx === 0 && OnlyOneSelected ? "region-item-selected-freezed" : "";
+      const iconStateClass = !OnlyOneSelected ? "clickable" : "disallow";
+
       return `
-        <div class="region-item-selected flex flex-row flex-center" data-code="${code}">
+        <div class="region-item-selected ${itemStateClass} flex flex-row flex-center" data-code="${code}">
           <span>${cname}</span>
-          <img class="clickable btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
+          <img class="${iconStateClass} btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
         </div>`;
     });
 
     Feedback("change");
 
-    document.querySelector(`#${Picker.ComponentId} .region-selected-container`).innerHTML = template.join("");
+    document.querySelector(`#${Picker.ComponentId} ${REGION_SELECTED_CONTAINER}`).innerHTML = template.join("");
   }
 
   /**
@@ -192,10 +200,11 @@ window.RegionPicker = function (container, options = {}) {
       if (!target) return;
 
       // handle clear single item
-      const selectedContainer = target.closest(".region-selected-container");
+      const selectedContainer = target.closest(REGION_SELECTED_CONTAINER);
       if (selectedContainer) {
         const classname = (target.className || "").trim();
         if (classname.indexOf("btn-remove-selected") === -1) return;
+        if (classname.indexOf("disallow") !== -1) return;
         const code = target.parentElement.getAttribute("data-code");
         removeSelectedRegion(code);
         UpdatePickerSelected();
