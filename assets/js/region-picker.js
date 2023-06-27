@@ -55,7 +55,7 @@ window.RegionPicker = function (container, options = {}) {
               <div class="region-picker-labels no-select">选择查询地区</div>
               <div class="flex flex-row align-center">
                   <div class="clickable no-select btn-select-all">全选</div>
-                  <div class="clickable no-select btn-clear-all">重置</div>
+                  <div class="clickable no-select btn-reset">重置</div>
                   <div class="clickable no-select btn-submit flex flex-center">确定</div>
               </div>
           </div>
@@ -212,9 +212,9 @@ window.RegionPicker = function (container, options = {}) {
         return;
       }
 
-      // handle clear all
-      const btnClearall = target.closest(".btn-clear-all");
-      if (btnClearall) {
+      // handle reset
+      const btnReset = target.closest(".btn-reset");
+      if (btnReset) {
         e.preventDefault();
         Picker.Selected = [];
         if (Picker.Options.preselected) {
@@ -342,6 +342,7 @@ window.RegionPicker = function (container, options = {}) {
     }
 
     UpdatePickerSelected();
+    ResetAllCheckBoxSelected();
     UpdateRegionCheckboxSelected();
   }
 
@@ -350,6 +351,12 @@ window.RegionPicker = function (container, options = {}) {
       Picker.Selected.forEach((selected) => {
         if (item.value === selected.code) item.checked = true;
       });
+    });
+  }
+
+  function ResetAllCheckBoxSelected() {
+    Array.from(document.querySelectorAll(`#${Picker.ComponentId} input[name=region-picker]`)).forEach((item) => {
+      if (item.checked) item.checked = false;
     });
   }
 
