@@ -208,6 +208,7 @@ window.RegionPicker = function (container, options = {}) {
         const code = target.parentElement.getAttribute("data-code");
         removeSelectedRegion(code);
         UpdatePickerSelected();
+        ResetAllCheckBoxSelected();
         UpdateRegionCheckboxSelected();
         return;
       }
