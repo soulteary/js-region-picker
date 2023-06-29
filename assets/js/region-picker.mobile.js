@@ -47,48 +47,50 @@ window.RegionPicker = function (container, options = {}) {
     return code;
   }
 
-  function initBaseContainer(container, componentId) {
+  const REGION_SELECTED_CONTAINER = ".region-selected-container";
+
+  function InitBaseContainer(container, componentId) {
     const visiableClass = Picker.Visiable ? "" : "hide";
     const template = `
-        <div id="${componentId}" class="region-picker-container ${visiableClass}">
-          <div class="nav flex flex-row align-center justify-between">
-              <div id="region-picker-container-cancel" class="nav-left">返回</div>
-              <div class="nav-middle">选择查询国家</div>
-              <div id="region-picker-container-sure" class="btn-submit">确定</div>
-          </div>
-        
-          <div class="area-select">
-            <div class="flex justify-between">
-                <div class="menu-name">已选择国家</div>
-                <div class="flex flex-row">
-                    <div class="btn-clear-all clickable no-select">一键清除</div>
-                    <div class="btn-select-all clickable no-select">全部选择</div>
-                </div>
-            </div>
-            <div class="region-selected-container flex flex-row flex-wrap"></div>
-          </div>
+    <div id="${componentId}" class="region-picker-container ${visiableClass}">
+    <div class="nav flex flex-row align-center justify-between">
+        <div id="region-picker-container-cancel" class="nav-left">返回</div>
+        <div class="nav-middle">选择查询国家</div>
+        <div id="region-picker-container-sure" class="btn-submit">确定</div>
+    </div>
   
-          <div class="list flex">
-            <div class="region-letters-container"></div>
-  
-            <div class="list-box">
-              <div class="region-picker-container-input flex align-center">
-                  <input type="text" id="region-search-input" class="list-search-input" placeholder="请输入国家中文或英文名称">
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                          d="M15.3156 14.4344L13.1906 12.3094C14.2406 11.0594 14.875 9.44687 14.875 7.6875C14.875 3.71875 11.6563 0.5 7.6875 0.5C3.71875 0.5 0.5 3.71875 0.5 7.6875C0.5 11.6562 3.71875 14.875 7.6875 14.875C9.44688 14.875 11.0594 14.2406 12.3094 13.1906L14.4344 15.3156C14.5563 15.4375 14.7156 15.5 14.875 15.5C15.0344 15.5 15.1938 15.4375 15.3156 15.3156C15.5625 15.0719 15.5625 14.6781 15.3156 14.4344ZM1.75 7.6875C1.75 4.4125 4.4125 1.75 7.6875 1.75C10.9625 1.75 13.625 4.4125 13.625 7.6875C13.625 10.9625 10.9625 13.625 7.6875 13.625C4.4125 13.625 1.75 10.9625 1.75 7.6875Z"
-                          fill="#82AAD7" />
-                  </svg>
-              </div>
-  
-              <div class="list-container flex flex-row">
-                <div class="list-container-select"></div>
-    
-                <div class="region-picker-container-list region-list-conatiner"></div>
-              </div>
-            </div>
+    <div class="area-select">
+      <div class="flex justify-between">
+          <div class="menu-name">已选择国家</div>
+          <div class="flex flex-row">
+              <div class="btn-reset clickable no-select">一键清除</div>
+              <div class="btn-select-all clickable no-select">全部选择</div>
           </div>
+      </div>
+      <div class="region-selected-container flex flex-row flex-wrap"></div>
+    </div>
+
+    <div class="list flex">
+      <div class="region-letters-container"></div>
+
+      <div class="list-box">
+        <div class="region-picker-container-input flex align-center">
+            <input type="text" id="region-search-input" class="list-search-input" placeholder="请输入国家中文或英文名称">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M15.3156 14.4344L13.1906 12.3094C14.2406 11.0594 14.875 9.44687 14.875 7.6875C14.875 3.71875 11.6563 0.5 7.6875 0.5C3.71875 0.5 0.5 3.71875 0.5 7.6875C0.5 11.6562 3.71875 14.875 7.6875 14.875C9.44688 14.875 11.0594 14.2406 12.3094 13.1906L14.4344 15.3156C14.5563 15.4375 14.7156 15.5 14.875 15.5C15.0344 15.5 15.1938 15.4375 15.3156 15.3156C15.5625 15.0719 15.5625 14.6781 15.3156 14.4344ZM1.75 7.6875C1.75 4.4125 4.4125 1.75 7.6875 1.75C10.9625 1.75 13.625 4.4125 13.625 7.6875C13.625 10.9625 10.9625 13.625 7.6875 13.625C4.4125 13.625 1.75 10.9625 1.75 7.6875Z"
+                    fill="#82AAD7" />
+            </svg>
         </div>
+
+        <div class="list-container flex flex-row">
+          <div class="list-container-select"></div>
+
+          <div class="region-picker-container-list region-list-conatiner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
       `;
     document.querySelector(container).innerHTML = template;
 
@@ -101,10 +103,8 @@ window.RegionPicker = function (container, options = {}) {
 
   /**
    * Generate the region picker letters template
-   *
-   * @param {array} regionList
    */
-  function initRegionPickerLetters(regionList) {
+  function InitRegionPickerLetters() {
     const firstLettersDict = Picker.RegionList.map((item, _) => [GetFirstUpperLetter(item.name), GetFirstUpperLetter(item.code)]).reduce((prev, item) => {
       prev[item[0]] = true;
       prev[item[1]] = true;
@@ -125,8 +125,6 @@ window.RegionPicker = function (container, options = {}) {
 
   /**
    * Generate the region list template
-   *
-   * @param {array} regionList
    */
   function InitRegionList() {
     const template = Picker.RegionList.map((item, index) => {
@@ -134,22 +132,21 @@ window.RegionPicker = function (container, options = {}) {
       const icon = regionIconFixer(code);
 
       return `
-        
-        <div class="region-picker-item">
-          <label for="region-picker-${code}" data-code="${code}" data-index="${index}" class="flex flex-row justify-between align-center">
-            <div class="flex flex-row align-center">
-                <img class="list__flag" src="${Picker.BaseDir}assets/region-icon/${icon}.svg" alt="${cname}" />
-                <div class="flex flex-col">
-                  <div class="region-picker-item-cname">${cname}</div>
-                  <div class="region-picker-item-name">${name}</div>
-                </div>
-            </div>
-            <div class="region-checkbox">
-                <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" >
-                <span class="region-checkbox-elem"></span>
-            </div>
-          </label>
-        </div>`;
+      <div class="region-picker-item">
+        <label for="region-picker-${code}" data-code="${code}" data-index="${index}" class="flex flex-row justify-between align-center">
+          <div class="flex flex-row align-center">
+              <img class="list__flag" src="${Picker.BaseDir}assets/region-icon/${icon}.svg" alt="${cname}" />
+              <div class="flex flex-col">
+                <div class="region-picker-item-cname">${cname}</div>
+                <div class="region-picker-item-name">${name}</div>
+              </div>
+          </div>
+          <div class="region-checkbox">
+              <input id="region-picker-${code}" type="checkbox" name="region-picker" value="${code}" >
+              <span class="region-checkbox-elem"></span>
+          </div>
+        </label>
+      </div>`;
     });
 
     document.querySelector(`#${Picker.ComponentId} .region-list-conatiner`).innerHTML = template.join("");
@@ -161,16 +158,16 @@ window.RegionPicker = function (container, options = {}) {
    * @param {array} regionList
    */
   function filterRegionListByChar(charSelected) {
-    const areaPickerItems = document.querySelectorAll(".region-picker-item");
+    const areaPickerItems = document.querySelectorAll(`#${Picker.ComponentId} .region-picker-item`);
     areaPickerItems.forEach((item) => {
       if (charSelected === "*") {
         item.classList.remove("hide");
         return;
       }
 
-      const enName = item.querySelector(".region-picker-item-name").innerText;
+      const name = item.querySelector(".region-picker-item-name").innerText;
       const code = item.querySelector("label").getAttribute("data-code");
-      if (enName.startsWith(charSelected) || code.startsWith(charSelected)) {
+      if (name.startsWith(charSelected) || code.startsWith(charSelected)) {
         item.classList.remove("hide");
       } else {
         item.classList.add("hide");
@@ -188,23 +185,27 @@ window.RegionPicker = function (container, options = {}) {
 
   /**
    * Update picker selected template
-   *
-   * @param {array} regionList
    */
   function UpdatePickerSelected() {
-    const template = Picker.Selected.map((item, _) => {
+    const OnlyOneSelected = Picker.Selected.length === 1;
+
+    const template = Picker.Selected.map((item, idx) => {
       const { cname, code } = item;
       item.icon = regionIconFixer(code);
+
+      const itemStateClass = idx === 0 && OnlyOneSelected ? "region-item-selected-freezed" : "";
+      const iconStateClass = !OnlyOneSelected ? "clickable" : "disallow";
+
       return `
-        <div class="region-item-selected flex flex-row flex-center" data-code="${code}">
+        <div class="region-item-selected ${itemStateClass} flex flex-row flex-center" data-code="${code}">
           <span>${cname}</span>
-          <img class="btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
+          <img class="${iconStateClass} btn-remove-selected" src="${Picker.BaseDir}assets/img/icon-close.svg" alt="" />
         </div>`;
     });
 
     Feedback("change");
 
-    document.querySelector(`#${Picker.ComponentId} .region-selected-container`).innerHTML = template.join("");
+    document.querySelector(`#${Picker.ComponentId} ${REGION_SELECTED_CONTAINER}`).innerHTML = template.join("");
   }
 
   /**
@@ -230,13 +231,15 @@ window.RegionPicker = function (container, options = {}) {
       if (!target) return;
 
       // handle clear single item
-      const selectedContainer = target.closest(".region-selected-container");
+      const selectedContainer = target.closest(REGION_SELECTED_CONTAINER);
       if (selectedContainer) {
         const classname = (target.className || "").trim();
         if (classname.indexOf("btn-remove-selected") === -1) return;
+        if (classname.indexOf("disallow") !== -1) return;
         const code = target.parentElement.getAttribute("data-code");
         removeSelectedRegion(code);
         UpdatePickerSelected();
+        ResetAllCheckBoxSelected();
         UpdateRegionCheckboxSelected();
         return;
       }
@@ -250,9 +253,9 @@ window.RegionPicker = function (container, options = {}) {
         return;
       }
 
-      // handle clear all
-      const btnClearall = target.closest(".btn-clear-all");
-      if (btnClearall) {
+      // handle reset
+      const btnReset = target.closest(".btn-reset");
+      if (btnReset) {
         e.preventDefault();
         Picker.Selected = [];
         if (Picker.Options.preselected) {
@@ -294,7 +297,7 @@ window.RegionPicker = function (container, options = {}) {
 
   // picker click
   function handlePickerLetterClick() {
-    const letterContainer = document.querySelector(".region-letters-container");
+    const letterContainer = document.querySelector(`#${Picker.ComponentId} .region-letters-container`);
     const letterLabels = Array.from(letterContainer.querySelectorAll(".picker-letter"));
     letterContainer.addEventListener("click", (e) => {
       e.preventDefault();
@@ -310,7 +313,6 @@ window.RegionPicker = function (container, options = {}) {
       } else {
         letterLabels.forEach((item) => item.classList.remove("picker-letter-active"));
         target.classList.add("picker-letter-active");
-        document.querySelector(".list-container-select").textContent = code;
         filterRegionListByChar(code.toLowerCase());
       }
     });
@@ -323,7 +325,6 @@ window.RegionPicker = function (container, options = {}) {
 
     searchInput.addEventListener("input", () => {
       const searchTerm = (searchInput.value || "").trim().toLowerCase();
-      document.querySelector(".list-container-select").textContent = "";
 
       if (!searchTerm) {
         areaPickerItems.forEach((item) => item.classList.remove("hide"));
@@ -433,6 +434,7 @@ window.RegionPicker = function (container, options = {}) {
     }
 
     UpdatePickerSelected();
+    ResetAllCheckBoxSelected();
     UpdateRegionCheckboxSelected();
   }
 
@@ -441,6 +443,12 @@ window.RegionPicker = function (container, options = {}) {
       Picker.Selected.forEach((selected) => {
         if (item.value === selected.code) item.checked = true;
       });
+    });
+  }
+
+  function ResetAllCheckBoxSelected() {
+    Array.from(document.querySelectorAll(`#${Picker.ComponentId} input[name=region-picker]`)).forEach((item) => {
+      if (item.checked) item.checked = false;
     });
   }
 
@@ -458,8 +466,8 @@ window.RegionPicker = function (container, options = {}) {
       Picker.BaseDir = baseDir + "/";
     }
 
-    initBaseContainer(container, componentId);
-    initRegionPickerLetters();
+    InitBaseContainer(container, componentId);
+    InitRegionPickerLetters();
     InitRegionList();
 
     handlePickerSelected();
